@@ -60,4 +60,8 @@ print('Список скидок: ')
 for c in session.query(Sale).all():
     print(c)
 
+id = int(input('Enter publisher id: '))
+for c in session.query(Publisher).filter(Publisher.id == id).all():
+    print(c)
+
 session.close()
