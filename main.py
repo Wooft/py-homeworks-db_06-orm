@@ -2,7 +2,6 @@ import json
 import os
 import pathlib
 import sqlalchemy
-import pprint
 from sqlalchemy.orm import sessionmaker
 from base import create_tables, Book, Publisher, Shop, Stock, Sale
 
@@ -32,30 +31,33 @@ for elements in data:
         session.add(shop)
     session.commit()
     if elements['model'] == 'stock':
-        print(f"{elements['fields']['id_shop']}, {elements['fields']['id_book']}, {elements['fields']['count']}")
         stock = Stock(id_book=elements['fields']['id_book'], id_shop=elements['fields']['id_shop'], count=elements['fields']['count'])
         session.add(stock)
         session.commit()
-    # if elements['model'] == 'sale':
-    #     sale = Sale(price=elements['fields']['price'], data_sale=elements['fields']['date_sale'], id_stock=elements['fields']['id_stock'], count=elements['fields']['count'])
-    #     session.add(sale)
+    if elements['model'] == 'sale':
+        sale = Sale(price=elements['fields']['price'], data_sale=elements['fields']['date_sale'], id_stock=elements['fields']['id_stock'], count=elements['fields']['count'])
+        session.add(sale)
 
 session.commit()
 
-# print('Список издателей: ')
-# for c in session.query(Publisher).all():
-#     print(c)
-#
-# print('Список книг: ')
-# for c in session.query(Book).all():
-#     print(c)
-#
-# print('Список магазинов: ')
-# for c in session.query(Shop).all():
-#     print(c)
-#
+print('Список издателей: ')
+for c in session.query(Publisher).all():
+    print(c)
+
+print('Список книг: ')
+for c in session.query(Book).all():
+    print(c)
+
+print('Список магазинов: ')
+for c in session.query(Shop).all():
+    print(c)
+
 print('Список наличия: ')
 for c in session.query(Stock).all():
+    print(c)
+
+print('Список скидок: ')
+for c in session.query(Sale).all():
     print(c)
 
 session.close()

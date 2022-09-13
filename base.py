@@ -39,17 +39,21 @@ class Stock(Base):
     id_book = sq.Column(sq.Integer, sq.ForeignKey("book.id"), nullable=False)
     id_shop = sq.Column(sq.Integer, sq.ForeignKey("shop.id"), nullable=False)
     count = sq.Column(sq.Integer, nullable=False)
+    shop = relationship(Shop, backref="id_shop")
 
     def __str__(self):
-        return f"{self.id} : {self.id_book} : {self.id_book} : {self.count}"
+        return f"{self.id} Book_id :{self.id_book} : Shop_id: {self.id_shop} : {self.count}"
 
 class Sale(Base):
     __tablename__ = "sale"
     id = sq.Column(sq.Integer, primary_key=True)
     price = sq.Column(sq.Float, nullable=False)
     data_sale = sq.Column(sq.TIMESTAMP, nullable=False)
-    id_stock = sq.Column(sq.Integer, sq.ForeignKey("shop.id"), nullable=False)
+    id_stock = sq.Column(sq.Integer, sq.ForeignKey("stock.id"), nullable=False)
     count = sq.Column(sq.Integer, nullable=False)
+
+    def __str__(self):
+        return f"{self.id} : {self.price} : {self.data_sale} : {self.id_stock} : {self.count}"
 
 def create_tables(engine):
     Base.metadata.drop_all(engine)
