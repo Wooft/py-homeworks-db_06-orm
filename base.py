@@ -10,7 +10,7 @@ class Publisher(Base):
     name = sq.Column(sq.String(length=40), unique=True)
 
     def __str__(self):
-        return f'Издатель {self.id} называется: {self.name}'
+        return f'{self.id}: {self.name}'
 
 class Book(Base):
     __tablename__ = "book"
@@ -20,11 +20,17 @@ class Book(Base):
     id_publisher = sq.Column(sq.Integer, sq.ForeignKey("publisher.id"), nullable=False)
     publisher = relationship(Publisher, backref="id_publisher")
 
+    def __str__(self):
+        return f'{self.id}: {self.title} : {self.id_publisher}'
+
 class Shop(Base):
     __tablename__ = "shop"
 
     id = sq.Column(sq.Integer, primary_key=True)
     name = sq.Column(sq.String(length=40), nullable=False)
+
+    def __str__(self):
+        return f"{self.id}: {self.name}"
 
 class Stock(Base):
     __tablename__ = "stock"
@@ -34,11 +40,14 @@ class Stock(Base):
     id_shop = sq.Column(sq.Integer, sq.ForeignKey("shop.id"), nullable=False)
     count = sq.Column(sq.Integer, nullable=False)
 
+    def __str__(self):
+        return f"{self.id} : {self.id_book} : {self.id_book} : {self.count}"
+
 class Sale(Base):
     __tablename__ = "sale"
     id = sq.Column(sq.Integer, primary_key=True)
-    price = sq.Column(sq.Integer, nullable=False)
-    data_sale = sq.Column(sq.Date, nullable=False)
+    price = sq.Column(sq.Float, nullable=False)
+    data_sale = sq.Column(sq.TIMESTAMP, nullable=False)
     id_stock = sq.Column(sq.Integer, sq.ForeignKey("shop.id"), nullable=False)
     count = sq.Column(sq.Integer, nullable=False)
 
