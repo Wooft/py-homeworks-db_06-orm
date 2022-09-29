@@ -5,12 +5,15 @@ import sqlalchemy
 from sqlalchemy.orm import sessionmaker
 from base import create_tables, Book, Publisher, Shop, Stock, Sale
 
-def CreateEngine():
-    DSN = 'postgresql://postgres:Shambala@localhost:5432/db06'
+def create_engine():
+    base_name = 'db06'
+    login = 'postgres'
+    password = 'Shambala'
+    DSN = f'postgresql://{login}:{password}@localhost:5432/{base_name}'
     engine = sqlalchemy.create_engine(DSN)
     return (engine)
 
-def GetData():
+def get_data():
     path = os.path.join(pathlib.Path.cwd(), "tests_data.json")
     with open(path, 'r') as file:
         data = json.load(file)
@@ -19,11 +22,10 @@ def GetData():
 def CreateTables(engine):
     create_tables(engine)
 
-
 def PasteData(engine):
     Session = sessionmaker(bind=engine)
     session = Session()
-    for elements in GetData():
+    for elements in get_data():
         if elements['model'] == 'publisher':
             pub = Publisher(name=elements['fields']['name'])
             session.add(pub)
@@ -45,7 +47,6 @@ def PasteData(engine):
             sale = Sale(price=elements['fields']['price'], data_sale=elements['fields']['date_sale'],
                         id_stock=elements['fields']['id_stock'], count=elements['fields']['count'])
             session.add(sale)
-
     session.commit()
     session.close
 
@@ -73,14 +74,13 @@ def OutDate(engine):
         print(c)
 
     id = int(input('Enter publisher id: '))
-    for c in session.query(Publisher).filter(Publisher.id == id).all():
+    for c in session.query(Shop).join(Stock).join(Book).join(Publisher).filter(Publisher.id == id):
         print(c)
     session.close()
 
-
 if __name__ == "__main__":
-    CreateTables(CreateEngine())
-    PasteData(CreateEngine())
-    OutDate(CreateEngine())
+    CreateTables(create_engine())
+    PasteData(create_engine())
+    OutDate(create_engine())
 
 
